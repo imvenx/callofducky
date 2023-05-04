@@ -13,6 +13,7 @@
   <pre style="position: absolute; right:1em; font-size: 2rem; font-weight: 800;">
       {{ points }} Points
   </pre>
+
   <svg ref="rootSvg" width="100%" height="100vh">
     <!-- <circle r="10" :cx="`${(x).toFixed(4)}%`" :cy="`${y.toFixed(4)}%`" fill="transparent" stroke="red" /> -->
 
@@ -33,6 +34,7 @@
 
     <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#grad1" stroke-width="5px" />
 
+    <!-- <text x="50%" y="50%" fill="yellowgreen" style=" filter: drop-shadow( 0 0 2px rgba(0, 0, 0, 1));">aslkjdaksldj</text> -->
 
     <circle ref="shotsEl" v-for="shot in shots" r="2" :cx="`${(shot.x).toFixed(4)}%`" :cy="`${shot.y.toFixed(4)}%`"
       fill="yellow" stroke="black" />
@@ -129,6 +131,28 @@ function checkIfHit() {
       lastShot.remove()
     }, 150);
     shotsEl.value.splice(0, 1)
+
+    if (addPoints > 0) {
+      var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', (shots.value[shots.value.length - 1]?.x.toString() ?? '0') + '%')
+      text.setAttribute('y', (shots.value[shots.value.length - 1]?.y.toString() ?? '0') + '%')
+      text.innerHTML = '+' + addPoints
+      text.style.fill = 'green'
+      text.style.fontSize = '2rem'
+      text.style.fontWeight = '1000'
+      text.style.filter = 'drop-shadow( 0 0 2px rgba(0, 0, 0, 1));'
+
+      text.animate([
+        { transform: 'translate(0, -30%)', fill: 'red', opacity: 0 },
+      ],
+        { duration: 1500, fill: 'forwards' })
+
+      rootSvg.value?.appendChild(text)
+
+      setInterval(() => text.remove(), 1500)
+    }
+
+    // setTimeout(() => , 1000);
     // if (addPoints > 0) {
     //   lastShot.parentElement?.removeChild(lastShot)
     //   bullsEyeCont.value.appendChild(lastShot)

@@ -71,10 +71,23 @@ onMounted(async () => {
 
 
 function updatePointer() {
+
+  if (gamma.value! < 0) {
+    alpha.value! += 180
+  }
+
   socket.volatile.emit('updatePointer', { alpha: alpha.value ?? 0 + 360, beta: beta.value ?? 0 + 360, gamma: gamma.value ?? 0 + 360 })
 }
 
 function shoot() {
+
+  // if (gamma.value! < 0) {
+  // alpha.value! += 180
+  // if (alpha.value! > 360) alpha.value! -= 360
+  // beta.value! = Math.abs(180 - beta.value!)
+  // alert(beta.value!)
+  // if (beta.value! > 180) beta.value! -= 180
+  // }
 
   socket.emit('shoot', { alpha: alpha.value ?? 0 + 360, beta: beta.value ?? 0 + 360 })
 
