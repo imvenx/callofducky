@@ -4,8 +4,6 @@
     <!-- a: {{ a }}
     b: {{ b }}
     c: {{ c }} -->
-    isSupported: {{ isSupported }}
-    isActive: {{ isActive }}
     alpha: {{ alpha }}
     beta: {{ beta }}
     gamma: {{ gamma }}
@@ -53,10 +51,9 @@ import ShotGun from 'src/components/ShotGun.vue'
 // let audio = new Audio('./shotgun-firing.mp3');
 const shootAudio = ref<HTMLAudioElement>()
 const reloadAudio = ref<HTMLAudioElement>()
-const { isSupported, isActive, request, release } = useWakeLock()
+// const { isSupported, isActive, request, release } = useWakeLock()
 
 const {
-  isAbsolute,
   alpha,
   beta,
   gamma,
@@ -65,19 +62,15 @@ const {
 const { isFullscreen, enter, exit, toggle } = useFullscreen()
 
 onMounted(async () => {
-  await request('screen')
-  setInterval(() => updatePointer(), 33)
+  // await request('screen')
+  setInterval(() => updatePointer(), 100)
 })
 
-
+const elm = ref<HTMLDivElement>()
 function updatePointer() {
-
-  if (gamma.value! < 0) {
-    alpha.value! += 180
-  }
-
   socket.volatile.emit('updatePointer', { alpha: alpha.value ?? 0 + 360, beta: beta.value ?? 0 + 360, gamma: gamma.value ?? 0 + 360 })
 }
+
 
 function shoot() {
 
@@ -108,67 +101,6 @@ async function toggleFullScreen() {
   await toggle()
 }
 
-// const a = ref<number>()
-// const b = ref<number>()
-// const c = ref<number>()
-
-// function getDeviceOrientation() {
-//   // Add a listener for deviceorientation event
-//   window.addEventListener('deviceorientation', (event: DeviceOrientationEvent) => {
-//     a.value = event.alpha || 0;
-//     b.value = event.beta || 0;
-//     c.value = event.gamma || 0;
-//   });
-
-//   // Add a listener for orientationchange event
-//   // window.addEventListener('orientationchange', () => {
-//   //   setTimeout(() => {
-
-//   if (c.value! < 0) {
-//     // Get the orientation angle
-//     const orientation = window.orientation || 0;
-
-//     // Calculate the correction angle based on the current orientation
-//     let correction = 0;
-//     if (orientation === -90) {
-//       correction = 270;
-//     } else if (orientation === 90) {
-//       correction = 90;
-//     }
-
-//     // Apply the correction to the alpha value
-//     a.value = (a.value! + correction) % 360;
-//     // }, 200);
-//   }
-//   // });
-
-//   // return { alpha, beta, gamma };
-// }
-
-function convertRelativeAnglesToAbsolute(alpha: number, beta: number, gamma: number): { alpha: number, beta: number, gamma: number } {
-  const absGamma = Math.abs(gamma);
-
-  // Calculate the absolute alpha value
-  let absAlpha = alpha + gamma;
-  if (absAlpha < 0) {
-    absAlpha += 360;
-  } else if (absAlpha >= 360) {
-    absAlpha -= 360;
-  }
-
-  // Calculate the absolute beta value
-  let absBeta = beta;
-  if (absGamma < 90) {
-    absBeta = -absBeta;
-  }
-  absBeta += gamma;
-
-  return {
-    alpha: absAlpha,
-    beta: absBeta,
-    gamma: absGamma
-  };
-}
 
 
 // function getDeviceOrientation() {
